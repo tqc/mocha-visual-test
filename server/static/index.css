@@ -1,0 +1,22 @@
+.test {
+	border: 1px solid #ccc;
+}
+
+h2 {
+	margin-top: 0;
+}
+
+.imgs {
+	display: flex;
+}
+
+.img {
+	min-height: 150px;
+}
+.img img {
+	max-width: 100%;
+	max-height: 250px;
+}
+.img button {
+	float: right;
+}
