@@ -1,6 +1,6 @@
 {
   "name": "mocha-visual-test",
-  "description": "Run tests in the browser with screenshot diffs for visual regression testing",
+  "description": "Run browser based mocha/chai tests in PhantomJS, take screenshots and compare with previous test runs.",
   "author": "Tom Clarkson",
   "version": "1.0.0",
   "repository": "github:tqc/mocha-visual-test",
