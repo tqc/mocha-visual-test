@@ -55,7 +55,7 @@ exports.run = function(url) {
                             var badImage = basepath + " - bad.png";
                             var currentImage = basepath + " - current.png";
                             var diffImage = basepath + " - diff.png";
-                            page.clipRect = data.clipRect;
+                            page.set("clipRect", data.clipRect);
                             if (fs.existsSync(currentImage)) fs.unlinkSync(currentImage);
                             page.render(currentImage, function() {
 

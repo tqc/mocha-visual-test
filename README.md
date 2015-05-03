@@ -2,9 +2,9 @@
 
 Run browser based mocha/chai tests in PhantomJS, take screenshots and compare with previous test runs for automated visual regression testing.
 
-After the first test run, use the web interface to mark visual tests as passed/failed
+After the first test run, use the web interface to mark visual tests as passed/failed:
 
-
+![Test UI](/ui.png?raw=true "Test UI")
 
 ## Setup
 

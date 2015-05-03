@@ -13,27 +13,31 @@
 </head>
 
 <body ng-controller="AppController" class="">
-    <button ng-click="getItems()">Refresh</button>
-    <div ng-repeat="test in tests" class="test">
-        <h2>{{test.title}}</h2>
-        <div ng-if="test.good && !test.diff">PASSED</div>
+    <h1>
+Tests
+    <button ng-click="getItems()">Update</button>
+   </h1>
+    <div ng-repeat="test in tests" class="test" ng-class="{passed: test.good && !test.diff, pending: (!test.good && !test.bad) || (test.bad && test.diff), failed: (test.good && test.diff) || (test.bad && !test.diff) }">
+        <div ng-if="test.good && !test.diff">
+            <h2>{{test.title}}</h2>
+        </div>
         <div ng-if="!test.good && !test.bad">
-            <div>
-                Need to mark current image as good or bad
-            </div>
+            <h2>{{test.title}} <button class="good"  ng-click="markGood(test)">Mark as good</button> <button class="bad"  ng-click="markBad(test)">Mark as bad</button></h2>
+            <p>
+                Before regression tests will work, you need to mark the current image as good or bad.
+            </p>
             <div class="imgs">
                 <div class="img">
                     <h3>Current</h3>
                     <img ng-src="{{test.current}}">
-                    <button ng-click="markGood(test)">Mark as good</button>
-                    <button ng-click="markBad(test)">Mark as bad</button>
                 </div>
             </div>
         </div>
         <div ng-if="test.good && test.diff">
-            <div>
-                Image has changed - option to use current as good image for next run
-            </div>
+            <h2>{{test.title}}  <button class="good" ng-click="markGood(test)">Mark as good</button></h2>
+            <p>
+                The image has changed. If this was intentional, make this the good image to be used on the next test run.
+            </p>
             <div class="imgs">
                 <div class="img">
                     <h3>Known good version</h3>
@@ -44,18 +48,23 @@
                     <img ng-src="{{test.diff}}">
                 </div>
                 <div class="img">
-                    <h3>Current<button ng-click="markGood(test)">Mark as good</button></h3>
-                    
+                    <h3>Current</h3>
                     <img ng-src="{{test.current}}">
                 </div>
             </div>
         </div>
         <div ng-if="test.bad && !test.diff">
-            Image matches bad one - failed
+            <h2>{{test.title}}</h2>
+            <p>
+                Image matches bad one - failed
+            </p>
             <img ng-src="{{test.bad}}">
         </div>
         <div ng-if="test.bad && test.diff">
-            Image changed from bad one - option to mark as good or still bad
+            <h2>{{test.title}} <button class="good"  ng-click="markGood(test)">Mark as good</button> <button class="bad"  ng-click="markBad(test)">Mark as bad</button></h2>
+            <p>
+                Image changed from bad one - option to mark as good or still bad
+            </p>
             <img ng-src="{{test.bad}}">
             <img ng-src="{{test.diff}}">
             <img ng-src="{{test.current}}">

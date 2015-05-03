@@ -1,22 +1,94 @@
+body {
+  font-family: "Helvetica Neue";
+  background-color: #b2c0d2; }
+
+h1 {
+  color: white;
+  background-color: #506a9b;
+  margin: -10px -10px 30px -10px;
+  padding: 10px 10px 10px 50px;
+  font-weight: normal; }
+  h1 button {
+    float: right;
+    border: 1px solid white;
+    background-color: #54A868;
+    color: white;
+    padding: 8px 20px;
+    font-size: 12pt; }
+
 .test {
-	border: 1px solid #ccc;
-}
+  border: 1px solid #000;
+  margin: 10px 0;
+  background-color: white; }
+  .test h2 {
+    line-height: 32px;
+    margin: 0; }
+    .test h2::before {
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      display: inline-block;
+      overflow: hidden;
+      border: 1px solid black;
+      font-size: 12pt;
+      font-weight: bold;
+      text-align: center;
+      line-height: 20px;
+      margin: 5px 10px;
+      float: left; }
+    .test h2 button {
+      float: right;
+      border: 1px solid black;
+      color: white;
+      padding: 3px 20px;
+      font-size: 10pt;
+      margin: 3px 5px; }
+      .test h2 button.good {
+        background-color: green; }
+      .test h2 button.bad {
+        background-color: red; }
+  .test p {
+    margin: 10px;
+    font-size: 10pt; }
+  .test .imgs {
+    display: flex; }
+    .test .imgs .img {
+      margin: 10px;
+      border: 1px solid #000;
+      min-height: 150px;
+      position: relative;
+      margin-bottom: 30px;
+      width: 33%;
+      text-align: center;
+      background-color: #A3A3A8; }
+      .test .imgs .img h3 {
+        position: absolute;
+        bottom: -20px;
+        margin: 0;
+        font-size: 11pt;
+        text-align: center;
+        left: 0;
+        right: 0; }
+      .test .imgs .img img {
+        max-width: 100%;
+        max-height: 250px; }
+  .test.passed h2 {
+    background-color: #D9FFD9; }
+    .test.passed h2::before {
+      content: "!";
+      background-color: green;
+      color: white; }
+  .test.pending h2 {
+    background-color: #F2F2CC; }
+    .test.pending h2::before {
+      content: "?";
+      background-color: #868600;
+      color: white; }
+  .test.failed h2 {
+    background-color: #FFE7E7; }
+    .test.failed h2::before {
+      content: "X";
+      background-color: red;
+      color: white; }
 
-h2 {
-	margin-top: 0;
-}
-
-.imgs {
-	display: flex;
-}
-
-.img {
-	min-height: 150px;
-}
-.img img {
-	max-width: 100%;
-	max-height: 250px;
-}
-.img button {
-	float: right;
-}
+/*# sourceMappingURL=index.css.map */
