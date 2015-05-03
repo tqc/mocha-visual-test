@@ -38,6 +38,11 @@ exports.run = function(url) {
                             });
                             suite.addTest(test);
 
+                        } else if (data.event == "mochaPending") {
+                            console.log(data);
+                            var test = new Test(data.title);
+                            suite.addTest(test);
+
                         } else if (data.event == "mochaFail") {
                             var test = new Test(data.title, function(done) {
                                 throw (new Error(data.message));
