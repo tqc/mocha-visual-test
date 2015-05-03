@@ -32,24 +32,20 @@ exports.run = function(url) {
                                 mocha.run();
                             });
                         } else if (data.event == "mochaPass") {
-                            console.log(data);
                             var test = new Test(data.title, function(done) {
                                 done();
                             });
                             suite.addTest(test);
 
                         } else if (data.event == "mochaPending") {
-                            console.log(data);
                             var test = new Test(data.title);
                             suite.addTest(test);
-
                         } else if (data.event == "mochaFail") {
                             var test = new Test(data.title, function(done) {
                                 throw (new Error(data.message));
                             });
                             suite.addTest(test);
                         } else if (data.event == "mochaDone") {
-                            console.log(data);
                             done();
                         } else if (data.event == "screenshotCheck") {
                             // todo: save/check screenshots
@@ -71,7 +67,6 @@ exports.run = function(url) {
                                 };
 
                                 function returnResult() {
-                                    console.log(result);
                                     page.evaluate(function(cbId, data) {
                                         window.callbacks[cbId](data);
                                     }, function() {}, data.callbackId, result);

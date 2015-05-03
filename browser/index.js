@@ -71,52 +71,49 @@ exports.init = function(callback) {
 
             window.callbacks = {};
 
-            // check against screenshot
-
-            chai.util.addProperty(chai.Assertion.prototype, 'matchGoodVersion', function() {
-                var screenshot = this._obj
-
-                this.assert(
-                    screenshot.hasGoodVersion,
-                    'No confirmed good screenshot available'
-                );
-
-                this.assert(
-                    screenshot.matchesGoodVersion,
-                    'Screenshot does not match known good version'
-                );
-                if (screenshot.hasBadVersion) {
-                    this.assert(!screenshot.matchesBadVersion,
-                        'Screenshot matches known bad version'
-                    );
-
-                }
-
-            })
-
-            window.checkScreenshot = function(title, selector, callback) {
-                var cbId = "" + Math.random();
-                var el = $(selector);
-                chai.assert(el.length > 0, "Element " + selector + " not found");
-                chai.assert(window.callPhantom, "Screenshot tests must be run in phantom");
-
-                window.callbacks[cbId] = function(data) {
-                    delete window.callbacks[cbId];
-                    callback(data);
-                }
-                if (window.callPhantom) {
-                    callPhantom({
-                        event: "screenshotCheck",
-                        selector: selector,
-                        title: title,
-                        clipRect: el[0].getBoundingClientRect(),
-                        callbackId: cbId
-                    });
-                } else {}
-            }
-
             mocha.reporter(reporter);
+
+            mocha.suite.on('pre-require', function(context, file, mocha) {
+                console.log("suite setup");
+                var assert = chai.assert;
+                context.checkScreenshot = function(title, selector) {
+                    if (window.callPhantom) {
+                        var test = context.it(title, function(done) {
+                            var el = $(selector);
+                            assert(el.length > 0, "Element " + selector + " not found");
+
+                            var cbId = "" + Math.random();
+                            window.callbacks[cbId] = function(screenshot) {
+                                delete window.callbacks[cbId];
+                                if (!screenshot.hasGoodVersion) return done(new Error("No confirmed good screenshot available"));
+                                if (!screenshot.matchesGoodVersion) return done(new Error("Screenshot does not match known good version"));
+                                if (screenshot.matchesBadVersion) return done(new Error("Screenshot matches known bad version"));
+                                done();
+                            }
+
+                            callPhantom({
+                                event: "screenshotCheck",
+                                selector: selector,
+                                title: test.fullTitle(),
+                                clipRect: el[0].getBoundingClientRect(),
+                                callbackId: cbId
+                            });
+                        });
+                    } else {
+                        // screenshots require phantom - check that the element exists then skip
+                        context.it(title, function() {
+                            var el = $(selector);
+                            assert(el.length > 0, "Element " + selector + " not found");
+                            this.test.skip();
+                        });
+                    }
+                };
+
+            });
+
             mocha.setup("bdd");
+
+
             chai.should();
 
             callback();
