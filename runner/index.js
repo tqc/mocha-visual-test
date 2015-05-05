@@ -1,12 +1,35 @@
 // runner module.
-var mocha = require("mocha");
+var Mocha = require('mocha');
+
 var should = require("chai").should();
 var path = require("path");
 var fs = require("fs");
 var looksSame = require('looks-same');
 
-exports.run = function(url) {
-    var Test = require("mocha/lib/test");
+exports.run = function(url, options, callback) {
+    if (typeof(describe) === "undefined") {
+        // must be running in gulp - need to set up new mocha instance
+        runInGulp(url, options, callback);
+    } else {
+        // running in mocha
+        runInternal(url);
+    }
+}
+
+function runInGulp(url, options, done) {
+    var mocha = new Mocha(options);
+
+    mocha.suite.emit('pre-require', global, "not a file", mocha);
+    //    mocha.suite.emit('require', require(file), file, self);
+    //    mocha.suite.emit('post-require', global, file, self);
+
+    runInternal(url);
+    mocha.run(function(e) {
+        if (done) done(e);
+    });
+}
+
+function runInternal(url) {
     var phantom = require("phantom");
     describe("Phantom", function() {
         var ph;
@@ -14,16 +37,23 @@ exports.run = function(url) {
         var tests = {};
         var suite = this;
         before(function(done) {
-            this.timeout(15000);
+            this.timeout(600000);
             phantom.create(function(ph2) {
                 ph = ph2;
                 ph.createPage(function(p) {
                     page = p;
+                    page.set("viewportSize", {
+                        width: 1024,
+                        height: 1024
+                    })
                     page.set("onError", function(data) {
                         throw new Error(data);
                     });
-                    page.set("onResourceError", function(resourceError) {
-                        suite.emit("error", new Error(resourceError.errorString));
+                    page.set("onResourceError", function(resourceError) {                        
+                        // ignore resource errors for now
+                        // todo: add an option to fail on all resource errors
+                        console.log(resourceError.errorString);
+                        // suite.emit("error", new Error(resourceError.errorString));
                     });
                     page.set("onCallback", function(data) {
                         if (!data) return;
@@ -32,16 +62,16 @@ exports.run = function(url) {
                                 mocha.run();
                             });
                         } else if (data.event == "mochaPass") {
-                            var test = new Test(data.title, function(done) {
+                            var test = new Mocha.Test(data.title, function(done) {
                                 done();
                             });
                             suite.addTest(test);
 
                         } else if (data.event == "mochaPending") {
-                            var test = new Test(data.title);
+                            var test = new Mocha.Test(data.title);
                             suite.addTest(test);
                         } else if (data.event == "mochaFail") {
-                            var test = new Test(data.title, function(done) {
+                            var test = new Mocha.Test(data.title, function(done) {
                                 throw (new Error(data.message));
                             });
                             suite.addTest(test);
@@ -49,7 +79,7 @@ exports.run = function(url) {
                             done();
                         } else if (data.event == "screenshotCheck") {
                             // todo: save/check screenshots
-                            var basepath = "./screenshots/" + data.title + "";
+                            var basepath = path.resolve("./screenshots/" + data.title + "");
 
                             var goodImage = basepath + " - good.png";
                             var badImage = basepath + " - bad.png";
@@ -58,6 +88,10 @@ exports.run = function(url) {
                             page.set("clipRect", data.clipRect);
                             if (fs.existsSync(currentImage)) fs.unlinkSync(currentImage);
                             page.render(currentImage, function() {
+                            console.log(currentImage);
+                            console.log(fs.existsSync(currentImage));
+
+                            console.log(data.clipRect);
 
                                 var result = {
                                     hasGoodVersion: false,
