@@ -1,5 +1,7 @@
 # mocha-visual-test
 
+[ ![Codeship Status for tqc/mocha-visual-test](https://codeship.com/projects/d2270660-1b30-0133-420c-7e346f2e432c/status?branch=master)](https://codeship.com/projects/94443)
+
 Run browser based mocha/chai tests in PhantomJS, take screenshots and compare with previous test runs for automated visual regression testing.
 
 After the first test run, use the web interface to mark visual tests as passed/failed:

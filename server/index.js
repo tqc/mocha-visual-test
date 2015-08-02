@@ -26,7 +26,7 @@ module.exports = function(app, express) {
 
         for (var k in tests) {
             var test = tests[k];
-//            if (!test.good && !test.bad) 
+            //            if (!test.good && !test.bad)
             result.push(test);
         }
         result.sort(function(a, b) {
@@ -43,23 +43,23 @@ module.exports = function(app, express) {
     app.use("/test", bodyparser.json());
 
     app.post("/test/markgood", function(req, res) {
-		var bn = folder+"/"+req.body.title;
-		var fc = bn+" - current.png";
-		var fg = bn+" - good.png";
-		var fb = bn+" - bad.png";
-		var fd = bn+" - diff.png";
+        var bn = folder + "/" + req.body.title;
+        var fc = bn + " - current.png";
+        var fg = bn + " - good.png";
+        var fb = bn + " - bad.png";
+        var fd = bn + " - diff.png";
 
-		fs.writeFileSync(fg, fs.readFileSync(fc));
-		if (fs.existsSync(fd)) fs.unlinkSync(fd);
-		if (fs.existsSync(fb)) fs.unlinkSync(fb);
+        fs.writeFileSync(fg, fs.readFileSync(fc));
+        if (fs.existsSync(fd)) fs.unlinkSync(fd);
+        if (fs.existsSync(fb)) fs.unlinkSync(fb);
 
-		res.json({});
-	});
+        res.json({});
+    });
 
     app.post("/test/markbad", function(req, res) {
-		console.log(req.body.title);	
-		res.json({});
-	});
+        console.log(req.body.title);
+        res.json({});
+    });
 
     app.use("/test/images", express.static(path.resolve("./screenshots")));
     app.use("/test", express.static(path.resolve(__dirname, "./static")));

@@ -1,13 +1,13 @@
 // setup needed in the browser - events, custom reporter etc
 
 exports.init = function(callback) {
-    $.getScript("https://cdnjs.cloudflare.com/ajax/libs/mocha/2.2.4/mocha.min.js", function(data, textStatus, jqxhr) {
-        $.getScript("https://cdnjs.cloudflare.com/ajax/libs/chai/2.3.0/chai.min.js", function(data, textStatus, jqxhr) {
+    $.getScript("https://cdnjs.cloudflare.com/ajax/libs/mocha/2.2.4/mocha.min.js", function() {
+        $.getScript("https://cdnjs.cloudflare.com/ajax/libs/chai/2.3.0/chai.min.js", function() {
 
             if (window.callPhantom) {
                 callPhantom({
                     event: "mochaReady"
-                })
+                });
             } else {
                 console.log("Load was performed.");
             }
@@ -23,7 +23,7 @@ exports.init = function(callback) {
                         callPhantom({
                             event: "mochaPass",
                             title: test.fullTitle()
-                        })
+                        });
                     } else {
                         console.log('pass: %s', test.fullTitle());
                     }
@@ -35,7 +35,7 @@ exports.init = function(callback) {
                         callPhantom({
                             event: "mochaPending",
                             title: test.fullTitle()
-                        })
+                        });
                     } else {
                         console.log('pending: %s', test.fullTitle());
                     }
@@ -48,7 +48,7 @@ exports.init = function(callback) {
                             event: "mochaFail",
                             title: test.fullTitle(),
                             message: err.message
-                        })
+                        });
                     } else {
                         console.log('fail: %s -- error: %s', test.fullTitle(), err.message);
                     }
@@ -62,12 +62,12 @@ exports.init = function(callback) {
                             failures: failures,
                             pending: pending,
                             total: passes + pending + failures
-                        })
+                        });
                     } else {
                         console.log('end: %d/%d passed with %d skipped', passes, passes + failures, pending);
                     }
                 });
-            }
+            };
 
             window.callbacks = {};
 
@@ -89,7 +89,7 @@ exports.init = function(callback) {
                                 if (!screenshot.matchesGoodVersion) return done(new Error("Screenshot does not match known good version"));
                                 if (screenshot.matchesBadVersion) return done(new Error("Screenshot matches known bad version"));
                                 done();
-                            }
+                            };
 
                             callPhantom({
                                 event: "screenshotCheck",

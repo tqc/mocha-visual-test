@@ -1,0 +1,38 @@
+{
+    "extends": "defaults/configurations/eslint",
+    "parser": "babel-eslint",
+    "plugins": [
+    ],
+    "rules":{
+        "eqeqeq": 0,
+        "no-unused-vars": [2, {"vars": "all", "args":"none"}],
+        "indent": [2,4],
+        "quotes": 0,
+        "linebreak-style": [2,"unix"],
+        "strict": 0,
+        "no-console": 0,
+        // allow one line ifs
+        "curly": 0,
+
+    },
+    "globals": {
+        "should": true,
+        "angular": true,
+        "mocha": true,
+        "chai": true,
+        "$": true,
+        "callPhantom": true,
+        "describe": true,
+        "it": true,
+        "before": true,
+        "after": true
+    },
+    "env": {
+        "es6": true,
+        "browser": true,
+        "node": true,
+    },
+    "ecmafeatures": {
+        "modules": true
+    }
+}

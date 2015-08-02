@@ -22,5 +22,5 @@ function buildCssFile(inputFile, outputFile) {
 }
 
 gulp.task('default', function() {
-    buildCssFile("./server/css/index.scss", "./server/static/index.css")
+    buildCssFile("./server/css/index.scss", "./server/static/index.css");
 });

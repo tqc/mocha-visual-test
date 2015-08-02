@@ -2,8 +2,12 @@
   "name": "mocha-visual-test",
   "description": "Run browser based mocha/chai tests in PhantomJS, take screenshots and compare with previous test runs.",
   "author": "Tom Clarkson",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "repository": "github:tqc/mocha-visual-test",
+  "scripts": {
+    "test": "eslint . && mocha",
+    "posttest": "publish"
+  },
   "dependencies": {
     "body-parser": "^1.12.3",
     "chai": "^2.3.0",
@@ -16,6 +20,10 @@
     "npm": "2"
   },
   "devDependencies": {
-    "gulp": "^3.8.11"
+    "babel-eslint": "*",
+    "eslint": "^1.0.0",
+    "eslint-config-defaults": "^3.1.0",
+    "gulp": "^3.8.11",
+    "publish": "^0.5.0"
   }
 }

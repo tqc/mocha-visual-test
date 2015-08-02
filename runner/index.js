@@ -1,40 +1,19 @@
 // runner module.
 var Mocha = require('mocha');
 
-var should = require("chai").should();
+require("chai").should();
 var path = require("path");
 var fs = require("fs");
 var looksSame = require('looks-same');
 
-exports.run = function(url, options, callback) {
-    if (typeof(describe) === "undefined") {
-        // must be running in gulp - need to set up new mocha instance
-        runInGulp(url, options, callback);
-    } else {
-        // running in mocha
-        runInternal(url);
-    }
-}
 
-function runInGulp(url, options, done) {
-    var mocha = new Mocha(options);
-
-    mocha.suite.emit('pre-require', global, "not a file", mocha);
-    //    mocha.suite.emit('require', require(file), file, self);
-    //    mocha.suite.emit('post-require', global, file, self);
-
-    runInternal(url);
-    mocha.run(function(e) {
-        if (done) done(e);
-    });
-}
 
 function runInternal(url) {
     var phantom = require("phantom");
     describe("Phantom", function() {
         var ph;
         var page;
-        var tests = {};
+        var test;
         var suite = this;
         before(function(done) {
             this.timeout(600000);
@@ -45,11 +24,11 @@ function runInternal(url) {
                     page.set("viewportSize", {
                         width: 1024,
                         height: 1024
-                    })
+                    });
                     page.set("onError", function(data) {
                         throw new Error(data);
                     });
-                    page.set("onResourceError", function(resourceError) {                        
+                    page.set("onResourceError", function(resourceError) {
                         // ignore resource errors for now
                         // todo: add an option to fail on all resource errors
                         console.log(resourceError.errorString);
@@ -62,16 +41,16 @@ function runInternal(url) {
                                 mocha.run();
                             });
                         } else if (data.event == "mochaPass") {
-                            var test = new Mocha.Test(data.title, function(done) {
-                                done();
+                            test = new Mocha.Test(data.title, function(done2) {
+                                done2();
                             });
                             suite.addTest(test);
 
                         } else if (data.event == "mochaPending") {
-                            var test = new Mocha.Test(data.title);
+                            test = new Mocha.Test(data.title);
                             suite.addTest(test);
                         } else if (data.event == "mochaFail") {
-                            var test = new Mocha.Test(data.title, function(done) {
+                            test = new Mocha.Test(data.title, function(done2) {
                                 throw (new Error(data.message));
                             });
                             suite.addTest(test);
@@ -88,10 +67,6 @@ function runInternal(url) {
                             page.set("clipRect", data.clipRect);
                             if (fs.existsSync(currentImage)) fs.unlinkSync(currentImage);
                             page.render(currentImage, function() {
-                            console.log(currentImage);
-                            console.log(fs.existsSync(currentImage));
-
-                            console.log(data.clipRect);
 
                                 var result = {
                                     hasGoodVersion: false,
@@ -101,8 +76,8 @@ function runInternal(url) {
                                 };
 
                                 function returnResult() {
-                                    page.evaluate(function(cbId, data) {
-                                        window.callbacks[cbId](data);
+                                    page.evaluate(function(cbId, data2) {
+                                        window.callbacks[cbId](data2);
                                     }, function() {}, data.callbackId, result);
                                 }
 
@@ -114,16 +89,16 @@ function runInternal(url) {
                                         if (error) {
                                             console.log(error);
                                         }
-                                        //equal will be true, if images looks the same 
+                                        //equal will be true, if images looks the same
                                         result.matchesGoodVersion = equal || false;
                                         if (!equal) {
                                             looksSame.createDiff({
                                                 reference: goodImage,
                                                 current: currentImage,
                                                 diff: diffImage,
-                                                highlightColor: '#ff00ff', //color to highlight the differences 
+                                                highlightColor: '#ff00ff', //color to highlight the differences
                                                 strict: true,
-                                            }, function(error) {
+                                            }, function(error2) {
                                                 returnResult();
 
                                             });
@@ -141,7 +116,7 @@ function runInternal(url) {
                                     looksSame(badImage, currentImage, {
                                         strict: true
                                     }, function(error, equal) {
-                                        //equal will be true, if images looks the same 
+                                        //equal will be true, if images looks the same
                                         result.matchesBadVersion = !equal;
                                         returnResult();
                                     });
@@ -176,8 +151,32 @@ function runInternal(url) {
                 console.log('Page title is ' + result);
                 done();
             });
-        })
+        });
 
 
     });
+}
+
+function runInGulp(url, options, done) {
+    var mocha = new Mocha(options);
+
+    mocha.suite.emit('pre-require', global, "not a file", mocha);
+    //    mocha.suite.emit('require', require(file), file, self);
+    //    mocha.suite.emit('post-require', global, file, self);
+
+    runInternal(url);
+    mocha.run(function(e) {
+        if (done) done(e);
+    });
+}
+
+
+exports.run = function(url, options, callback) {
+    if (typeof describe === "undefined") {
+        // must be running in gulp - need to set up new mocha instance
+        runInGulp(url, options, callback);
+    } else {
+        // running in mocha
+        runInternal(url);
+    }
 };
